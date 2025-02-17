@@ -15,23 +15,37 @@ function Orders() {
       return;
     }
 
+    // Decode the token to get the userId (assuming JWT)
+    const userId = JSON.parse(atob(token.split('.')[1])).userId;
+
+    // Fetch orders for the specific user using the userId
     axios
-      .get("http://localhost:5000/api/orders", { headers: { Authorization: `Bearer ${token}` } })
+      .get(`http://localhost:5000/api/orders/${userId}`, {  // Include userId in the URL
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then((res) => {
-        console.log(res.data); // Check the structure of the response
         setOrders(Array.isArray(res.data) ? res.data : []);
         setLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching orders:", err);
-        setError(`Error fetching orders: ${err.message}`);
+        setError("Failed to load orders. Please try again later.");
         setLoading(false);
       });
   }, [token, navigate]);
 
-  if (loading) return <div className="d-flex justify-content-center align-items-center vh-100"><div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div></div>;
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
-  if (error) return <div className="alert alert-danger text-center">{error}</div>;
+  if (error) {
+    return <div className="alert alert-danger text-center">{error}</div>;
+  }
 
   return (
     <div className="container mt-5">
@@ -42,21 +56,65 @@ function Orders() {
             <thead className="table-dark">
               <tr>
                 <th>#</th>
+                <th>Order ID</th>
                 <th>Order Date</th>
-                <th>Customer Name</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>Order Details</th>
               </tr>
             </thead>
             <tbody>
-              {orders.map((o, index) => (
-                <tr key={o.OrderID}>
-                  <td>{index + 1}</td>
-                  <td>{o.OrderDate}</td>
-                  <td>{o.FullName}</td>
-                  <td>{o.ProductName}</td>
-                  <td className="fw-bold">{o.Quantity}</td>
-                </tr>
+              {orders.map((order, index) => (
+                <React.Fragment key={order.OrderID || index}>
+                  <tr>
+                    <td>{index + 1}</td>
+                    <td>{order.OrderID}</td>
+                    <td>{new Date(order.OrderDate).toLocaleDateString()}</td>
+                    <td>{`$${order.TotalPrice.toFixed(2)}`}</td>
+                    <td>{order.Status}</td>
+                    <td>{new Date(order.CreatedAt).toLocaleDateString()}</td>
+                    <td>{new Date(order.UpdatedAt).toLocaleDateString()}</td>
+                    <td>
+                      <button
+                        className="btn btn-info"
+                        data-bs-toggle="collapse"
+                        data-bs-target={`#orderDetails${order.OrderID}`}
+                        aria-expanded="false"
+                        aria-controls={`orderDetails${order.OrderID}`}
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                  <tr id={`orderDetails${order.OrderID}`} className="collapse">
+                    <td colSpan="8">
+                      <div className="table-responsive">
+                        <table className="table table-bordered table-striped">
+                          <thead className="table-secondary">
+                            <tr>
+                              <th>#</th>
+                              <th>Product ID</th>
+                              <th>Quantity</th>
+                              <th>Subtotal</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {order.OrderDetails.map((detail, idx) => (
+                              <tr key={detail.OrderDetailID || idx}>
+                                <td>{idx + 1}</td>
+                                <td>{detail.ProductID}</td>
+                                <td>{detail.Quantity}</td>
+                                <td>{`$${detail.Subtotal.toFixed(2)}`}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </React.Fragment>
               ))}
             </tbody>
           </table>

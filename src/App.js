@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import Orders from "./pages/Orders";
 import { AuthContext } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
+import Footer from "./Footer";
 
 function App() {
     const { user, logout } = useContext(AuthContext);
@@ -79,7 +80,9 @@ function App() {
                     <Route path="/register" element={<Register />} />
                 </Routes>
             </div>
+            <Footer />
         </div>
+        
     );
 }
 
