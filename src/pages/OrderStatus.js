@@ -2,30 +2,27 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function OrderStatus() {
-  const [orders, setOrders] = useState([]); // เก็บรายการคำสั่งซื้อ
+  const [orders, setOrders] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // จำลองการโหลดสถานะจาก localStorage หรือ API
     const storedOrders = JSON.parse(localStorage.getItem("orders")) || [];
+    setOrders(storedOrders);
 
-    if (storedOrders.length === 0) {
-      // ถ้าไม่มีข้อมูล ให้สร้างตัวอย่างคำสั่งซื้อ
-      const exampleOrders = [
-        { id: 1, status: "รอดำเนินการ", message: "คำสั่งซื้อได้รับการยืนยันแล้ว" },
-        { id: 2, status: "กำลังจัดส่ง", message: "สินค้าของคุณอยู่ระหว่างการจัดส่ง" },
-        { id: 3, status: "จัดส่งสำเร็จ", message: "สินค้าส่งถึงปลายทางแล้ว!" },
-      ];
-      localStorage.setItem("orders", JSON.stringify(exampleOrders));
-      setOrders(exampleOrders);
-    } else {
-      setOrders(storedOrders);
-    }
+    const amount = localStorage.getItem("paymentAmount");
+    setTotalAmount(amount);
   }, []);
 
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">สถานะคำสั่งซื้อ</h2>
+
+      {totalAmount && (
+        <div className="alert alert-info text-center">
+          💰 ยอดชำระ: <strong>{parseFloat(totalAmount).toFixed(2)} บาท</strong>
+        </div>
+      )}
 
       {orders.length === 0 ? (
         <div className="alert alert-warning text-center">ยังไม่มีคำสั่งซื้อ</div>

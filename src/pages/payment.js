@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 function Payment() {
   const [paymentMethod, setPaymentMethod] = useState("creditCard");
   const [paymentDetails, setPaymentDetails] = useState("");
+  const [amount, setAmount] = useState(""); // ช่องกรอกจำนวนเงิน
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
@@ -14,12 +15,15 @@ function Payment() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!paymentDetails) {
-      setMessage("กรุณากรอกรายละเอียดการชำระเงิน");
+    if (!paymentDetails || !amount) {
+      setMessage("กรุณากรอกรายละเอียดและจำนวนเงิน");
       return;
     }
 
     setMessage("กำลังดำเนินการชำระเงิน...");
+
+    // บันทึกจำนวนเงินลง localStorage
+    localStorage.setItem("paymentAmount", amount);
 
     setTimeout(() => {
       setMessage("การชำระเงินสำเร็จ! กำลังไปยังหน้าติดตามคำสั่งซื้อ...");
@@ -56,6 +60,17 @@ function Payment() {
                     className="form-control"
                     value={paymentDetails}
                     onChange={(e) => setPaymentDetails(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">จำนวนเงิน</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
                     required
                   />
                 </div>
