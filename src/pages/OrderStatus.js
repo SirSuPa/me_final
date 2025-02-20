@@ -2,34 +2,56 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function OrderStatus() {
-  const [orderStatus, setOrderStatus] = useState(null); // สถานะการสั่งซื้อ
+  const [orders, setOrders] = useState([]); // เก็บรายการคำสั่งซื้อ
   const navigate = useNavigate();
 
   useEffect(() => {
-    // สมมุติว่าเราจะดึงข้อมูลสถานะจาก API
-    const orderID = 12345; // ตัวอย่าง OrderID ที่ได้จากการยืนยันคำสั่งซื้อ
-    // อาจจะทำการดึงข้อมูลสถานะจาก API ที่ server
-    setOrderStatus("กำลังดำเนินการ");
+    // จำลองการโหลดสถานะจาก localStorage หรือ API
+    const storedOrders = JSON.parse(localStorage.getItem("orders")) || [];
 
-    // หรือถ้าต้องการให้คนไม่สามารถเข้าหน้านี้โดยตรงถ้าไม่ได้ทำการสั่งซื้อ
-    // สามารถใช้ `navigate("/login")` เพื่อให้ไปที่หน้า login หากไม่มีข้อมูลการสั่งซื้อ
+    if (storedOrders.length === 0) {
+      // ถ้าไม่มีข้อมูล ให้สร้างตัวอย่างคำสั่งซื้อ
+      const exampleOrders = [
+        { id: 1, status: "รอดำเนินการ", message: "คำสั่งซื้อได้รับการยืนยันแล้ว" },
+        { id: 2, status: "กำลังจัดส่ง", message: "สินค้าของคุณอยู่ระหว่างการจัดส่ง" },
+        { id: 3, status: "จัดส่งสำเร็จ", message: "สินค้าส่งถึงปลายทางแล้ว!" },
+      ];
+      localStorage.setItem("orders", JSON.stringify(exampleOrders));
+      setOrders(exampleOrders);
+    } else {
+      setOrders(storedOrders);
+    }
   }, []);
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-4">Order Status</h2>
+      <h2 className="text-center mb-4">สถานะคำสั่งซื้อ</h2>
 
-      {orderStatus ? (
-        <div className="alert alert-info text-center">
-          สถานะการสั่งซื้อของคุณคือ: {orderStatus}
-        </div>
+      {orders.length === 0 ? (
+        <div className="alert alert-warning text-center">ยังไม่มีคำสั่งซื้อ</div>
       ) : (
-        <div className="text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
+        <div className="row">
+          {orders.map((order) => (
+            <div className="col-md-4 mb-3" key={order.id}>
+              <div className={`card shadow-sm ${order.status === "จัดส่งสำเร็จ" ? "border-success" : "border-info"}`}>
+                <div className="card-body">
+                  <h5 className="card-title">คำสั่งซื้อ #{order.id}</h5>
+                  <p className="card-text">{order.message}</p>
+                  <span className={`badge ${order.status === "จัดส่งสำเร็จ" ? "bg-success" : "bg-primary"}`}>
+                    {order.status}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
+
+      <div className="text-center mt-4">
+        <button className="btn btn-outline-primary" onClick={() => navigate("/")}>
+          กลับไปหน้าหลัก
+        </button>
+      </div>
     </div>
   );
 }

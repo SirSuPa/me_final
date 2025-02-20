@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Payment() {
-  const [paymentMethod, setPaymentMethod] = useState("creditCard"); // เก็บวิธีการชำระเงิน
-  const [paymentDetails, setPaymentDetails] = useState(""); // เก็บรายละเอียดการชำระเงิน
-  const [message, setMessage] = useState(""); // ข้อความแจ้งเตือน
-  const navigate = useNavigate(); // ใช้สำหรับการเปลี่ยนหน้า
+  const [paymentMethod, setPaymentMethod] = useState("creditCard");
+  const [paymentDetails, setPaymentDetails] = useState("");
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handlePaymentChange = (e) => {
-    setPaymentMethod(e.target.value); // เปลี่ยนวิธีการชำระเงิน
+    setPaymentMethod(e.target.value);
   };
 
   const handleSubmit = (e) => {
@@ -19,50 +19,53 @@ function Payment() {
       return;
     }
 
-    // สมมุติการชำระเงินสำเร็จ:
-    setMessage("การชำระเงินสำเร็จ!");
+    setMessage("กำลังดำเนินการชำระเงิน...");
 
-    // เมื่อการชำระเงินสำเร็จ เปลี่ยนไปหน้า OrderStatus
     setTimeout(() => {
-      navigate("/orderstatus"); // ไปยังหน้า OrderStatus
-    }, 2000); // รอ 2 วินาที ก่อนเปลี่ยนหน้า
+      setMessage("การชำระเงินสำเร็จ! กำลังไปยังหน้าติดตามคำสั่งซื้อ...");
+      setTimeout(() => {
+        navigate("/OrderStatus");
+      }, 1500);
+    }, 2000);
   };
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-4">ชำระเงิน</h2>
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card shadow-lg">
+            <div className="card-body">
+              <h2 className="text-center mb-4">ชำระเงิน</h2>
 
-      {message && <div className="alert alert-info text-center">{message}</div>}
+              {message && <div className="alert alert-info text-center">{message}</div>}
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">วิธีการชำระเงิน</label>
-          <select
-            className="form-control"
-            value={paymentMethod}
-            onChange={handlePaymentChange}
-          >
-            <option value="creditCard">บัตรเครดิต</option>
-            <option value="paypal">PayPal</option>
-            <option value="bankTransfer">โอนเงินผ่านธนาคาร</option>
-          </select>
+              <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label className="form-label">วิธีการชำระเงิน</label>
+                  <select className="form-control" value={paymentMethod} onChange={handlePaymentChange}>
+                    <option value="creditCard">บัตรเครดิต</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="bankTransfer">โอนเงินผ่านธนาคาร</option>
+                  </select>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">รายละเอียดการชำระเงิน</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={paymentDetails}
+                    onChange={(e) => setPaymentDetails(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <button type="submit" className="btn btn-success w-100">ยืนยันการชำระเงิน</button>
+              </form>
+            </div>
+          </div>
         </div>
-
-        <div className="mb-3">
-          <label className="form-label">รายละเอียดการชำระเงิน</label>
-          <input
-            type="text"
-            className="form-control"
-            value={paymentDetails}
-            onChange={(e) => setPaymentDetails(e.target.value)}
-            required
-          />
-        </div>
-
-        <button type="submit" className="btn btn-success">
-          ยืนยันการชำระเงิน
-        </button>
-      </form>
+      </div>
     </div>
   );
 }

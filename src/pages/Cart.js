@@ -54,14 +54,14 @@ function Cart() {
                 <span>Price: ${Number(item.Price).toFixed(2)}</span>
                 <div className="d-flex align-items-center mt-2">
                   <button
-                    className="btn btn-sm btn-secondary me-2"
+                    className="btn btn-sm btn-danger me-2"
                     onClick={() => handleQuantityChange(index, item.quantity - 1)}
                   >
                     ➖
                   </button>
                   <span className="fw-bold">{item.quantity}</span>
                   <button
-                    className="btn btn-sm btn-secondary ms-2"
+                    className="btn btn-sm btn-success ms-2"
                     onClick={() => handleQuantityChange(index, item.quantity + 1)}
                   >
                     ➕
@@ -83,7 +83,7 @@ function Cart() {
       {cart.length > 0 && (
         <div className="text-center mt-4">
           <h4>Total Price: ${calculateTotal()}</h4>
-          <button className="btn btn-secondary me-2" onClick={() => navigate("/products")}>
+          <button className="btn btn-warning me-2" onClick={() => navigate("/products")}>
             ⬅️ Continue Shopping
           </button>
           <button className="btn btn-success me-2" onClick={() => navigate("/payment")}>
