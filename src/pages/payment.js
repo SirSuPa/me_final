@@ -37,27 +37,27 @@ function Payment() {
     <div className="container mt-5">
       <div className="row justify-content-center">
         <div className="col-md-6">
-          <div className="card shadow-lg">
-            <div className="card-body">
-              <h2 className="text-center mb-4">ชำระเงิน</h2>
+          <div className="card shadow-lg border-0 rounded-4">
+            <div className="card-body p-4">
+              <h2 className="text-center mb-4 text-primary fw-bold">💳 ชำระเงิน</h2>
 
               {message && <div className="alert alert-info text-center">{message}</div>}
 
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                  <label className="form-label">วิธีการชำระเงิน</label>
+                  <label className="form-label fw-bold">วิธีการชำระเงิน</label>
                   <select className="form-control" value={paymentMethod} onChange={handlePaymentChange}>
-                    <option value="creditCard">บัตรเครดิต</option>
-                    <option value="paypal">PayPal</option>
-                    <option value="bankTransfer">โอนเงินผ่านธนาคาร</option>
+                    <option value="creditCard">💳 บัตรเครดิต</option>
+                    <option value="paypal">💰 PayPal</option>
+                    <option value="bankTransfer">🏦 โอนเงินผ่านธนาคาร</option>
                   </select>
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label">รายละเอียดการชำระเงิน</label>
+                  <label className="form-label fw-bold">รายละเอียดการชำระเงิน</label>
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control border-0 shadow-sm"
                     value={paymentDetails}
                     onChange={(e) => setPaymentDetails(e.target.value)}
                     required
@@ -65,17 +65,17 @@ function Payment() {
                 </div>
 
                 <div className="mb-3">
-                  <label className="form-label">จำนวนเงิน</label>
+                  <label className="form-label fw-bold">จำนวนเงิน</label>
                   <input
                     type="number"
-                    className="form-control"
+                    className="form-control border-0 shadow-sm"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     required
                   />
                 </div>
 
-                <button type="submit" className="btn btn-success w-100">ยืนยันการชำระเงิน</button>
+                <button type="submit" className="btn btn-success w-100 fw-bold rounded-3">✅ ยืนยันการชำระเงิน</button>
               </form>
             </div>
           </div>

@@ -109,7 +109,7 @@ function Products() {
                       onChange={(e) => handleQuantityChange(p.ProductID, e.target.value)}
                     />
                     <button
-                      className="btn btn-primary"
+                      className="btn btn-success"
                       onClick={() => handleAddToCart(p)}
                     >
                       Add to Cart
